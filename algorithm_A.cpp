@@ -25,6 +25,7 @@ using namespace std;
  * 4. The function that print out the current board statement
 *************************************************************************/
 bool ifbomb(Board board, int i ,int j);
+bool ifenemy(Board board, int i ,int j, char color);
 
 void algorithm_A(Board board, Player player, int index[]) {
 
@@ -35,6 +36,7 @@ void algorithm_A(Board board, Player player, int index[]) {
     char color = player.get_color();
     float flag = 0;
 
+    bool mark[ROW][COL] = {0};
     float map[ROW][COL] = {0};
 
     for (int i = 0; i < ROW; i++) {
@@ -46,59 +48,85 @@ void algorithm_A(Board board, Player player, int index[]) {
                     switch(board.get_capacity(i, j)) {
                         case 2:
                             if (i == 0 && j == 0 &&
-                                (ifbomb(board, 0, 1) && board.get_cell_color(0, 1) != color ||
-                                ifbomb(board, 1, 0) && board.get_cell_color(1, 0) != color))
-                                {flag = 6; map[i][j] = 6; break;}
+                                (ifbomb(board, 0, 1) && ifenemy(board, 0, 1, color) ||
+                                ifbomb(board, 1, 0) && ifenemy(board, 1, 0, color)))
+                                {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
                             else if (i == 4 && j == 0 &&
-                                (ifbomb(board, 4, 1) && board.get_cell_color(4, 1) != color ||
-                                ifbomb(board, 3, 0) && board.get_cell_color(3, 0) != color))
-                                {flag = 6; map[i][j] = 6; break;}
+                                (ifbomb(board, 4, 1) && ifenemy(board, 4, 1, color) ||
+                                ifbomb(board, 3, 0) && ifenemy(board, 3, 0, color)))
+                                {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
                             else if (i == 0 && j == 5 &&
-                                (ifbomb(board, 1, 5) && board.get_cell_color(1, 5) != color ||
-                                ifbomb(board, 0, 4) && board.get_cell_color(0, 4) != color))
-                                {flag = 6; map[i][j] = 6; break;}
+                                (ifbomb(board, 1, 5) && ifenemy(board, 1, 5, color) ||
+                                ifbomb(board, 0, 4) && ifenemy(board, 0, 4, color)))
+                                {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
                             else if (i == 4 && j == 5 &&
-                                (ifbomb(board, 4, 4) && board.get_cell_color(4, 4) != color ||
-                                ifbomb(board, 3, 5) && board.get_cell_color(3, 5) != color))
-                                {flag = 6; map[i][j] = 6; break;}
+                                (ifbomb(board, 4, 4) && ifenemy(board, 4, 4, color) ||
+                                ifbomb(board, 3, 5) && ifenemy(board, 3, 5, color)))
+                                {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
                             else break;
                         case 3:
                             if (i == 0 && 
-                            (ifbomb(board, 0, j - 1) && board.get_cell_color(0, j - 1) != color ||
-                            ifbomb(board, 0, j + 1) && board.get_cell_color(0, j + 1) != color ||
-                            ifbomb(board, 1, j) && board.get_cell_color(1, j) != color))
-                            {flag = 6; map[i][j] = 6; break;}
+                            (ifbomb(board, 0, j - 1) && ifenemy(board, 0, j - 1, color) ||
+                            ifbomb(board, 0, j + 1) && ifenemy(board, 0, j + 1, color) ||
+                            ifbomb(board, 1, j) && ifenemy(board, 1, j, color)))
+                            {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
                             else if (i == 4 && 
-                            (ifbomb(board, 4, j - 1) && board.get_cell_color(4, j - 1) != color ||
-                            ifbomb(board, 4, j + 1) && board.get_cell_color(4, j + 1) != color ||
-                            ifbomb(board, 1, j) && board.get_cell_color(1, j) != color))
-                            {flag = 6; map[i][j] = 6; break;}
+                            (ifbomb(board, 4, j - 1) && ifenemy(board, 4, j - 1, color) ||
+                            ifbomb(board, 4, j + 1) && ifenemy(board, 4, j + 1, color)||
+                            ifbomb(board, 3, j) && ifenemy(board, 3, j, color)))
+                            {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
                             else if (j == 0 && 
-                            (ifbomb(board, i + 1, j) && board.get_cell_color(i + 1, j) != color ||
-                            ifbomb(board, i - 1, j) && board.get_cell_color(i - 1, j) != color ||
-                            ifbomb(board, i, 1) && board.get_cell_color(i, 1) != color))
-                            {flag = 6; map[i][j] = 6; break;}
+                            (ifbomb(board, i + 1, j) && ifenemy(board, i + 1, j, color) ||
+                            ifbomb(board, i - 1, j) && ifenemy(board, i - 1, j, color) ||
+                            ifbomb(board, i, 1) && ifenemy(board, i, 1, color)))
+                            {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
                             else if (j == 5 && 
-                            (ifbomb(board, i + 1, j) && board.get_cell_color(i + 1, j) != color ||
-                            ifbomb(board, i - 1, j) && board.get_cell_color(i - 1, j) != color ||
-                            ifbomb(board, i, 4) && board.get_cell_color(i, 4) != color))
-                            {flag = 6; map[i][j] = 6; break;}
+                            (ifbomb(board, i + 1, j) && ifenemy(board, i + 1, j, color) ||
+                            ifbomb(board, i - 1, j) && ifenemy(board, i - 1, j, color) ||
+                            ifbomb(board, i, 4) && ifenemy(board, i, 4, color)))
+                            {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
                             else break;                          
                         case 4:
-                            if (ifbomb(board, i + 1, j) && board.get_cell_color(i + 1, j) != color ||
-                            ifbomb(board, i - 1, j) && board.get_cell_color(i - 1, j) != color ||
-                            ifbomb(board, i, j + 1) && board.get_cell_color(i, j + 1) != color ||
-                            ifbomb(board, i, j - 1) && board.get_cell_color(i, j - 1) != color)
-                            {flag = 6; map[i][j] = 6; break;}
-                            else break;      
+                            if (ifbomb(board, i + 1, j) && ifenemy(board, i + 1, j, color) ||
+                            ifbomb(board, i - 1, j) && ifenemy(board, i - 1, j, color) ||
+                            ifbomb(board, i, j + 1) && ifenemy(board, i, j + 1, color) ||
+                            ifbomb(board, i, j - 1) && ifenemy(board, i, j - 1, color))
+                            {flag = 6; map[i][j] = 6; mark[i][j] = 1; break;}
+                            else break;
                     }
                 }
             }
 
-            // find bomb need to explose (can conquer enemy & won't lead to )5
-            if (flag <= 5) {
+            // find bomb need to explose (can conquer enemy) 5
+            if (flag <= 5 && mark[i][j] == 0) {
                 if (ifbomb(board, i, j) && board.get_cell_color(i, j) == color) {
-
+                    switch(board.get_capacity(i, j)) {
+                        case 2:
+                            if (i == 0 && j == 0 && (ifenemy(board, 0, 1, color) || ifenemy(board, 1, 0, color)))
+                                {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else if (i == 4 && j == 0 && (ifenemy(board, 4, 1, color) || ifenemy(board, 3, 0, color)))
+                                {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else if (i == 0 && j == 5 && (ifenemy(board, 1, 5, color) || ifenemy(board, 0, 4, color)))
+                                {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else if (i == 4 && j == 5 && (ifenemy(board, 4, 4, color) || ifenemy(board, 3, 5, color)))
+                                {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else break;
+                        case 3:
+                            if (i == 0 && (ifenemy(board, 0, j - 1, color) || ifenemy(board, 0, j + 1, color) || ifenemy(board, 1, j, color)))
+                            {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else if (i == 4 && (ifenemy(board, 4, j - 1, color) || ifenemy(board, 4, j + 1, color) || ifenemy(board, 3, j, color)))
+                            {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else if (j == 0 && (ifenemy(board, i + 1, j, color) || ifenemy(board, i - 1, j, color) || ifenemy(board, i, 1, color)))
+                            {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else if (j == 5 && (ifenemy(board, i + 1, j, color) || ifenemy(board, i - 1, j, color) || ifenemy(board, i, 4, color)))
+                            {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else break;                          
+                        case 4:
+                            if (ifenemy(board, i - 1, j, color) || ifenemy(board, i + 1, j, color) ||
+                                ifenemy(board, i, j + 1, color) || ifenemy(board, i, j - 1, color))
+                            {flag = 5; map[i][j] = 5; mark[i][j] = 1; break;}
+                            else break;      
+                    }
                 }
             }
         }
@@ -111,6 +139,12 @@ void algorithm_A(Board board, Player player, int index[]) {
 
 bool ifbomb(Board board, int i, int j) {
     if (board.get_orbs_num(i, j) == board.get_capacity(i, j) - 1) 
+        return 1;
+    return 0;
+}
+
+bool ifenemy(Board board, int i, int j, char color) {
+    if (board.get_cell_color(i, j) != color && board.get_cell_color(i, j) != 'w')
         return 1;
     return 0;
 }
