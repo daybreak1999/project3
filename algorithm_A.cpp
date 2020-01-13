@@ -24,31 +24,93 @@ using namespace std;
  * 3. The function that return the color fo the cell(row, col)
  * 4. The function that print out the current board statement
 *************************************************************************/
+bool ifbomb(Board board, int i ,int j);
 
-
-void algorithm_A(Board board, Player player, int index[]){
-
-    // cout << board.get_capacity(0, 0) << endl;
-    // cout << board.get_orbs_num(0, 0) << endl;
-    // cout << board.get_cell_color(0, 0) << endl;
-    // board.print_current_board(0, 0, 0);
+void algorithm_A(Board board, Player player, int index[]) {
 
     //////////// Random Algorithm ////////////
     // Here is the random algorithm for your reference, you can delete or comment it.
   
     int row, col;
-    int color = player.get_color();
-    while(1) {
-        if  (board.get_cell_color(0, 0) == color || board.get_cell_color(0, 0) == 'w') {
-            row = 0; col = 0;
-            break;
+    char color = player.get_color();
+    float flag = 0;
+
+    float map[ROW][COL] = {0};
+
+    for (int i = 0; i < ROW; i++) {
+        for (int j = 0; j < COL; j++) {
+
+            // find conflict 6
+            if (flag <= 6) {
+                if (ifbomb(board, i, j) && board.get_cell_color(i, j) == color) {
+                    switch(board.get_capacity(i, j)) {
+                        case 2:
+                            if (i == 0 && j == 0 &&
+                                (ifbomb(board, 0, 1) && board.get_cell_color(0, 1) != color ||
+                                ifbomb(board, 1, 0) && board.get_cell_color(1, 0) != color))
+                                {flag = 6; map[i][j] = 6; break;}
+                            else if (i == 4 && j == 0 &&
+                                (ifbomb(board, 4, 1) && board.get_cell_color(4, 1) != color ||
+                                ifbomb(board, 3, 0) && board.get_cell_color(3, 0) != color))
+                                {flag = 6; map[i][j] = 6; break;}
+                            else if (i == 0 && j == 5 &&
+                                (ifbomb(board, 1, 5) && board.get_cell_color(1, 5) != color ||
+                                ifbomb(board, 0, 4) && board.get_cell_color(0, 4) != color))
+                                {flag = 6; map[i][j] = 6; break;}
+                            else if (i == 4 && j == 5 &&
+                                (ifbomb(board, 4, 4) && board.get_cell_color(4, 4) != color ||
+                                ifbomb(board, 3, 5) && board.get_cell_color(3, 5) != color))
+                                {flag = 6; map[i][j] = 6; break;}
+                            else break;
+                        case 3:
+                            if (i == 0 && 
+                            (ifbomb(board, 0, j - 1) && board.get_cell_color(0, j - 1) != color ||
+                            ifbomb(board, 0, j + 1) && board.get_cell_color(0, j + 1) != color ||
+                            ifbomb(board, 1, j) && board.get_cell_color(1, j) != color))
+                            {flag = 6; map[i][j] = 6; break;}
+                            else if (i == 4 && 
+                            (ifbomb(board, 4, j - 1) && board.get_cell_color(4, j - 1) != color ||
+                            ifbomb(board, 4, j + 1) && board.get_cell_color(4, j + 1) != color ||
+                            ifbomb(board, 1, j) && board.get_cell_color(1, j) != color))
+                            {flag = 6; map[i][j] = 6; break;}
+                            else if (j == 0 && 
+                            (ifbomb(board, i + 1, j) && board.get_cell_color(i + 1, j) != color ||
+                            ifbomb(board, i - 1, j) && board.get_cell_color(i - 1, j) != color ||
+                            ifbomb(board, i, 1) && board.get_cell_color(i, 1) != color))
+                            {flag = 6; map[i][j] = 6; break;}
+                            else if (j == 5 && 
+                            (ifbomb(board, i + 1, j) && board.get_cell_color(i + 1, j) != color ||
+                            ifbomb(board, i - 1, j) && board.get_cell_color(i - 1, j) != color ||
+                            ifbomb(board, i, 4) && board.get_cell_color(i, 4) != color))
+                            {flag = 6; map[i][j] = 6; break;}
+                            else break;                          
+                        case 4:
+                            if (ifbomb(board, i + 1, j) && board.get_cell_color(i + 1, j) != color ||
+                            ifbomb(board, i - 1, j) && board.get_cell_color(i - 1, j) != color ||
+                            ifbomb(board, i, j + 1) && board.get_cell_color(i, j + 1) != color ||
+                            ifbomb(board, i, j - 1) && board.get_cell_color(i, j - 1) != color)
+                            {flag = 6; map[i][j] = 6; break;}
+                            else break;      
+                    }
+                }
+            }
+
+            // find bomb need to explose (can conquer enemy & won't lead to )5
+            if (flag <= 5) {
+                if (ifbomb(board, i, j) && board.get_cell_color(i, j) == color) {
+
+                }
+            }
         }
-        else {
-            row = rand() % 5;
-            col = rand() % 6;
-        }
-        if (board.get_cell_color(row, col) == color || board.get_cell_color(row, col) == 'w') break;
     }
+
+
     index[0] = row;
     index[1] = col;
+}
+
+bool ifbomb(Board board, int i, int j) {
+    if (board.get_orbs_num(i, j) == board.get_capacity(i, j) - 1) 
+        return 1;
+    return 0;
 }
