@@ -135,9 +135,9 @@ void algorithm_A(Board board, Player player, int index[]) {
             if (flag < 5 && mark[i][j] == 0) {
                 if (ifready(board, i, j) &&
                     (board.get_cell_color(i, j) == color || board.get_cell_color(i, j) == 'w')) {
+                    int enemy = 0; int comrade = 0;
                     switch(board.get_capacity(i, j)) {
                         case 2: 
-                            int enemy = 0; int comrade = 0;
                             if (i == 0 && j == 0) {
                                 if (ifenemy(board, 0, 1, color)) enemy++;
                                 else if (board.get_cell_color(0, 1) != 'w') comrade++;
@@ -169,7 +169,6 @@ void algorithm_A(Board board, Player player, int index[]) {
                                 flag = 4; mark[i][j] = 1;
                             } break;
                         case 3:
-                            int enemy = 0; int comrade = 0;
                             if (i == 0) {
                                 if (ifenemy(board, 0, j - 1, color)) enemy++;
                                 else if (board.get_cell_color(0, j - 1) != 'w') comrade++;
@@ -212,7 +211,6 @@ void algorithm_A(Board board, Player player, int index[]) {
                                 flag = 4; mark[i][j] = 1;
                             } break;                          
                         case 4:
-                            int enemy = 0; int comrade = 0;
                             if (ifenemy(board, i, j - 1, color)) enemy++;
                             else if (board.get_cell_color(i, j - 1) != 'w') comrade++;
                             if (ifenemy(board, i, j + 1, color)) enemy++;
@@ -234,15 +232,16 @@ void algorithm_A(Board board, Player player, int index[]) {
                                 else map[i][j] = 4.7;
                                 flag = 4; mark[i][j] = 1;
                             } break;
+                    }
                 }
             }
 
             // occupy (enemy isn't bomb) 3
             if (flag < 4 && mark[i][j] == 0) {
                 if (board.get_cell_color(i, j) == 'w') {
+                    int comrade = 0; int enemy = 0;
                     switch(board.get_capacity(i, j)) {
                         case 2: 
-                            int comrade = 0; 
                             if (i == 0 && j == 0) {
                                 if (board.get_cell_color(0, 1) != 'w') comrade++;
                                 if (board.get_cell_color(1, 0) != 'w') comrade++;
@@ -264,7 +263,6 @@ void algorithm_A(Board board, Player player, int index[]) {
                             else map[i][j] = 3.9;
                             flag = 3; mark[i][j] = 1; break;
                         case 3:
-                            int enemy = 0; int comrade = 0;
                             if (i == 0) {
                                 if (ifenemy(board, 0, j - 1, color) && ifbomb(board, 0, j - 1)) break;
                                 else if (ifenemy(board, 0, j - 1, color)) enemy++;
@@ -321,7 +319,6 @@ void algorithm_A(Board board, Player player, int index[]) {
                             else map[i][j] = 3.8;
                             flag = 3; mark[i][j] = 1; break;                          
                         case 4:
-                            int enemy = 0; int comrade = 0;
                             if (ifenemy(board, i, j - 1, color) && ifbomb(board, i, j - 1)) break;
                             else if (ifenemy(board, i, j - 1, color)) enemy++;
                             else if (board.get_cell_color(i, j - 1) != 'w') comrade++;
@@ -350,15 +347,16 @@ void algorithm_A(Board board, Player player, int index[]) {
                             else if (enemy == 0 && comrade == 3) map[i][j] = 3.65;
                             else map[i][j] = 3.64;
                             flag = 4; mark[i][j] = 1; break;
+                    }
                 }
             }
 
             // produce bomb (second order, the block's neighbor hasn't enemy) 2
             if (flag < 3 && mark[i][j] == 0) {
                 if (ifready(board, i, j) && board.get_cell_color(i, j) == color) {
+                    int comrade = 0;
                     switch(board.get_capacity(i, j)) {
                         case 3:
-                            int comrade = 0;
                             if (i == 0) {
                                 if (board.get_cell_color(0, j - 1) == color) comrade++;
                                 if (board.get_cell_color(0, j + 1) == color) comrade++;
@@ -385,7 +383,6 @@ void algorithm_A(Board board, Player player, int index[]) {
                             else map[i][j] = 2.9;
                             flag = 2; mark[i][j] = 1; break;                          
                         case 4:
-                            int comrade = 0;
                             if (board.get_cell_color(i, j - 1) == color) comrade++;
                             if (board.get_cell_color(i, j + 1) == color) comrade++;
                             if (board.get_cell_color(i - 1, j) == color) comrade++;
@@ -409,7 +406,7 @@ void algorithm_A(Board board, Player player, int index[]) {
 
             // enemy
             if (flag < 1 && mark[i][j] == 0) {
-                if(ifenemy(board, i, j)) {
+                if(ifenemy(board, i, j, color)) {
                     map[i][j] = -1; flag = -1; mark[i][j] = 1;
                 }
             }
@@ -425,7 +422,7 @@ void algorithm_A(Board board, Player player, int index[]) {
             }
         }
     }
-    
+
     index[0] = row;
     index[1] = col;
 }
