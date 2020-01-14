@@ -351,9 +351,10 @@ void algorithm_A(Board board, Player player, int index[]) {
                             else map[i][j] = 3.64;
                             flag = 4; mark[i][j] = 1; break;
                 }
+            }
 
-                // produce bomb (second order, the block's neighbor hasn't enemy) 2
-                if (flag < 3 && mark[i][j] == 0) {
+            // produce bomb (second order, the block's neighbor hasn't enemy) 2
+            if (flag < 3 && mark[i][j] == 0) {
                 if (ifready(board, i, j) && board.get_cell_color(i, j) == color) {
                     switch(board.get_capacity(i, j)) {
                         case 3:
@@ -397,11 +398,34 @@ void algorithm_A(Board board, Player player, int index[]) {
                             flag = 2; mark[i][j] = 1; break;
                     }
                 }
+            }
             
+            // draft 1
+            if (flag < 2 && mark[i][j] == 0) {
+                if((!ifready(board, i, j) && !ifbomb(board, i, j) && board.get_cell_color(i, j) == color)) {
+                    map[i][j] = 1; flag = 1; mark[i][j] = 1;
+                }            
+            }
+
+            // enemy
+            if (flag < 1 && mark[i][j] == 0) {
+                if(ifenemy(board, i, j)) {
+                    map[i][j] = -1; flag = -1; mark[i][j] = 1;
+                }
             }
         }
     }
 
+    int max = -1;
+    for (int i = 0; i < ROW; i++) {
+        for (int j = 0; j < COL; j++) {
+            if(map[i][j] > max) {
+                max = map[i][j];
+                row = i; col = j;
+            }
+        }
+    }
+    
     index[0] = row;
     index[1] = col;
 }
