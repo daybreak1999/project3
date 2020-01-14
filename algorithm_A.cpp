@@ -152,15 +152,15 @@ void algorithm_A(Board board, Player player, int index[]) {
                             }
                             else if (i == 0 && j == 5) {
                                 if (ifenemy(board, 1, 5, color)) enemy++;
-                                else if (board.get_cell_color(3, 0) != 'w') comrade++;
+                                else if (board.get_cell_color(1, 5) != 'w') comrade++;
                                 if (ifenemy(board, 0, 4, color)) enemy++;
-                                else if (board.get_cell_color(4, 1) != 'w') comrade++;
+                                else if (board.get_cell_color(0, 4) != 'w') comrade++;
                             } 
                             else if (i == 4 && j == 5) {
                                 if (ifenemy(board, 4, 4, color)) enemy++;
-                                else if (board.get_cell_color(3, 0) != 'w') comrade++;
+                                else if (board.get_cell_color(4, 4) != 'w') comrade++;
                                 if (ifenemy(board, 3, 5, color)) enemy++;
-                                else if (board.get_cell_color(4, 1) != 'w') comrade++;
+                                else if (board.get_cell_color(3, 5) != 'w') comrade++;
                             }
                             if (enemy > 0) {
                                 if (enemy == 2) map[i][j] = 4.95;
@@ -214,13 +214,13 @@ void algorithm_A(Board board, Player player, int index[]) {
                         case 4:
                             int enemy = 0; int comrade = 0;
                             if (ifenemy(board, i, j - 1, color)) enemy++;
-                                else if (board.get_cell_color(i, j - 1) != 'w') comrade++;
-                                if (ifenemy(board, i, j + 1, color)) enemy++;
-                                else if (board.get_cell_color(i, j + 1) != 'w') comrade++;
-                                if (ifenemy(board, i - 1, j, color)) enemy++;
-                                else if (board.get_cell_color(i - 1, j) != 'w') comrade++;
-                                if (ifenemy(board, i + 1, j, color)) enemy++;
-                                else if (board.get_cell_color(i + 1, j) != 'w') comrade++;
+                            else if (board.get_cell_color(i, j - 1) != 'w') comrade++;
+                            if (ifenemy(board, i, j + 1, color)) enemy++;
+                            else if (board.get_cell_color(i, j + 1) != 'w') comrade++;
+                            if (ifenemy(board, i - 1, j, color)) enemy++;
+                            else if (board.get_cell_color(i - 1, j) != 'w') comrade++;
+                            if (ifenemy(board, i + 1, j, color)) enemy++;
+                            else if (board.get_cell_color(i + 1, j) != 'w') comrade++;
                             if (enemy > 0) {
                                 if (enemy == 4) map[i][j] = 4.79;
                                 else if (enemy == 3 && comrade == 0) map[i][j] = 4.78;
@@ -234,6 +234,122 @@ void algorithm_A(Board board, Player player, int index[]) {
                                 else map[i][j] = 4.7;
                                 flag = 4; mark[i][j] = 1;
                             } break;
+                }
+            }
+
+            // occupy (enemy isn't bomb) 3
+            if (flag < 4 && mark[i][j] == 0) {
+                if (board.get_cell_color(i, j) == 'w') {
+                    switch(board.get_capacity(i, j)) {
+                        case 2: 
+                            int comrade = 0; 
+                            if (i == 0 && j == 0) {
+                                if (board.get_cell_color(0, 1) != 'w') comrade++;
+                                if (board.get_cell_color(1, 0) != 'w') comrade++;
+                            }  
+                            else if (i == 4 && j == 0) {
+                                if (board.get_cell_color(3, 0) != 'w') comrade++;
+                                if (board.get_cell_color(4, 1) != 'w') comrade++;
+                            }
+                            else if (i == 0 && j == 5) {
+                                if (board.get_cell_color(1, 5) != 'w') comrade++;
+                                if (board.get_cell_color(0, 4) != 'w') comrade++;
+                            } 
+                            else if (i == 4 && j == 5) {
+                                if (board.get_cell_color(4, 4) != 'w') comrade++;
+                                if (board.get_cell_color(3, 5) != 'w') comrade++;
+                            }
+                            if (comrade == 0) map[i][j] = 3.99;
+                            else if (comrade == 1) map[i][j] = 3.95;
+                            else map[i][j] = 3.9;
+                            flag = 3; mark[i][j] = 1; break;
+                        case 3:
+                            int enemy = 0; int comrade = 0;
+                            if (i == 0) {
+                                if (ifenemy(board, 0, j - 1, color) && ifbomb(board, 0, j - 1)) break;
+                                else if (ifenemy(board, 0, j - 1, color)) enemy++;
+                                else if (board.get_cell_color(0, j - 1) != 'w') comrade++;
+                                if (ifenemy(board, 0, j + 1, color) && ifbomb(board, 0, j + 1)) break;
+                                else if (ifenemy(board, 0, j + 1, color)) enemy++;
+                                else if (board.get_cell_color(0, j + 1) != 'w') comrade++;
+                                if (ifenemy(board, 1, j, color) && ifbomb(board, 1, j)) break;
+                                else if (ifenemy(board, 1, j, color)) enemy++;
+                                else if (board.get_cell_color(1, j) != 'w') comrade++;
+                            }  
+                            else if (i == 4) {
+                                if (ifenemy(board, 4, j - 1, color) && ifbomb(board, 4, j - 1)) break;
+                                else if (ifenemy(board, 4, j - 1, color)) enemy++;
+                                else if (board.get_cell_color(4, j - 1) != 'w') comrade++;
+                                if (ifenemy(board, 4, j + 1, color) && ifbomb(board, 4, j + 1)) break;
+                                else if (ifenemy(board, 4, j + 1, color)) enemy++;
+                                else if (board.get_cell_color(4, j + 1) != 'w') comrade++;
+                                if (ifenemy(board, 3, j, color) && ifbomb(board, 3, j)) break;
+                                else if (ifenemy(board, 3, j, color)) enemy++;
+                                else if (board.get_cell_color(3, j) != 'w') comrade++;
+                            }
+                            else if (j == 0) {
+                                if (ifenemy(board, i + 1, j, color) && ifbomb(board, i + 1, j)) break;
+                                else if (ifenemy(board, i + 1, j, color)) enemy++;
+                                else if (board.get_cell_color(i + 1, j) != 'w') comrade++;
+                                if (ifenemy(board, i - 1, j, color) && ifbomb(board, i - 1, j)) break;
+                                else if (ifenemy(board, i - 1, j, color)) enemy++;
+                                else if (board.get_cell_color(i - 1, j) != 'w') comrade++;
+                                if (ifenemy(board, i, 1, color) && ifbomb(board, i, 1)) break;
+                                else if (ifenemy(board, i, 1, color)) enemy++;
+                                else if (board.get_cell_color(i, 1) != 'w') comrade++;
+                            } 
+                            else if (j == 5) {
+                                if (ifenemy(board, i + 1, j, color) && ifbomb(board, i + 1, j)) break;
+                                else if (ifenemy(board, i + 1, j, color)) enemy++;
+                                else if (board.get_cell_color(i + 1, j) != 'w') comrade++;
+                                if (ifenemy(board, i - 1, j, color) && ifbomb(board, i - 1, j)) break;
+                                else if (ifenemy(board, i - 1, j, color)) enemy++;
+                                else if (board.get_cell_color(i - 1, j) != 'w') comrade++;
+                                if (ifenemy(board, i, 4, color) && ifbomb(board, i, 4)) break;
+                                else if (ifenemy(board, i, 4, color)) enemy++;
+                                else if (board.get_cell_color(i, 4) != 'w') comrade++;
+                            }
+                            if (enemy == 3) map[i][j] = 3.89;
+                            else if (enemy == 2 && comrade == 0) map[i][j] = 3.88;
+                            else if (enemy == 2 && comrade == 1) map[i][j] = 3.87;
+                            else if (enemy == 1 && comrade == 0) map[i][j] = 3.86;
+                            else if (enemy == 1 && comrade == 1) map[i][j] = 3.85;
+                            else if (enemy == 1 && comrade == 2) map[i][j] = 3.84;
+                            else if (enemy == 0 && comrade == 0) map[i][j] = 3.83;
+                            else if (enemy == 0 && comrade == 1) map[i][j] = 3.82;
+                            else if (enemy == 0 && comrade == 2) map[i][j] = 3.81;
+                            else map[i][j] = 3.8;
+                            flag = 3; mark[i][j] = 1; break;                          
+                        case 4:
+                            int enemy = 0; int comrade = 0;
+                            if (ifenemy(board, i, j - 1, color) && ifbomb(board, i, j - 1)) break;
+                            else if (ifenemy(board, i, j - 1, color)) enemy++;
+                            else if (board.get_cell_color(i, j - 1) != 'w') comrade++;
+                            if (ifenemy(board, i, j + 1, color) && ifbomb(board, i, j + 1)) break;
+                            else if (ifenemy(board, i, j + 1, color)) enemy++;
+                            else if (board.get_cell_color(i, j + 1) != 'w') comrade++;
+                            if (ifenemy(board, i - 1, j, color) && ifbomb(board, i - 1, j)) break;
+                            else if (ifenemy(board, i - 1, j, color)) enemy++;
+                            else if (board.get_cell_color(i - 1, j) != 'w') comrade++;
+                            if (ifenemy(board, i + 1, j, color) && ifbomb(board, i + 1, j)) break;
+                            else if (ifenemy(board, i + 1, j, color)) enemy++;
+                            else if (board.get_cell_color(i + 1, j) != 'w') comrade++;
+                            if (enemy == 4) map[i][j] = 3.79;
+                            else if (enemy == 3 && comrade == 0) map[i][j] = 3.78;
+                            else if (enemy == 3 && comrade == 1) map[i][j] = 3.76;
+                            else if (enemy == 2 && comrade == 0) map[i][j] = 3.75;
+                            else if (enemy == 2 && comrade == 1) map[i][j] = 3.74;
+                            else if (enemy == 2 && comrade == 2) map[i][j] = 3.73;
+                            else if (enemy == 1 && comrade == 0) map[i][j] = 3.72;
+                            else if (enemy == 1 && comrade == 1) map[i][j] = 3.71;
+                            else if (enemy == 1 && comrade == 2) map[i][j] = 3.7;
+                            else if (enemy == 1 && comrade == 3) map[i][j] = 3.69;
+                            else if (enemy == 0 && comrade == 0) map[i][j] = 3.68;
+                            else if (enemy == 0 && comrade == 1) map[i][j] = 3.67;
+                            else if (enemy == 0 && comrade == 2) map[i][j] = 3.66;
+                            else if (enemy == 0 && comrade == 3) map[i][j] = 3.65;
+                            else map[i][j] = 3.64;
+                            flag = 4; mark[i][j] = 1; break;
                 }
             }
         }
