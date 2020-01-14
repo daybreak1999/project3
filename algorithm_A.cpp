@@ -351,10 +351,56 @@ void algorithm_A(Board board, Player player, int index[]) {
                             else map[i][j] = 3.64;
                             flag = 4; mark[i][j] = 1; break;
                 }
+
+                // produce bomb (second order, the block's neighbor hasn't enemy) 2
+                if (flag < 3 && mark[i][j] == 0) {
+                if (ifready(board, i, j) && board.get_cell_color(i, j) == color) {
+                    switch(board.get_capacity(i, j)) {
+                        case 3:
+                            int comrade = 0;
+                            if (i == 0) {
+                                if (board.get_cell_color(0, j - 1) == color) comrade++;
+                                if (board.get_cell_color(0, j + 1) == color) comrade++;
+                                if (board.get_cell_color(1, j) == color) comrade++;
+                            }  
+                            else if (i == 4) {
+                                if (board.get_cell_color(4, j - 1) == color) comrade++;
+                                if (board.get_cell_color(4, j + 1) == color) comrade++;
+                                if (board.get_cell_color(3, j) == color) comrade++;
+                            }
+                            else if (j == 0) {
+                                if (board.get_cell_color(i + 1, j) == color) comrade++;
+                                if (board.get_cell_color(i - 1, j) == color) comrade++;
+                                if (board.get_cell_color(i, 1) == color) comrade++;
+                            } 
+                            else if (j == 5) {
+                                if (board.get_cell_color(i + 1, j) == color) comrade++;
+                                if (board.get_cell_color(i - 1, j) == color) comrade++;
+                                if (board.get_cell_color(i, 4) == color) comrade++;
+                            }
+                            if (comrade == 0) map[i][j] = 2.99;
+                            else if (comrade == 1) map[i][j] = 2.98;
+                            else if (comrade == 2) map[i][j] = 2.95;
+                            else map[i][j] = 2.9;
+                            flag = 2; mark[i][j] = 1; break;                          
+                        case 4:
+                            int comrade = 0;
+                            if (board.get_cell_color(i, j - 1) == color) comrade++;
+                            if (board.get_cell_color(i, j + 1) == color) comrade++;
+                            if (board.get_cell_color(i - 1, j) == color) comrade++;
+                            if (board.get_cell_color(i + 1, j) == color) comrade++;
+                            if (comrade == 0) map[i][j] = 2.89;
+                            else if (comrade == 1) map[i][j] = 2.87;
+                            else if (comrade == 2) map[i][j] = 2.85;
+                            else if (comrade == 3) map[i][j] = 2.83;
+                            else map[i][j] = 2.81;
+                            flag = 2; mark[i][j] = 1; break;
+                    }
+                }
+            
             }
         }
     }
-
 
     index[0] = row;
     index[1] = col;
